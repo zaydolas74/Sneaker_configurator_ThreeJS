@@ -34,26 +34,68 @@ dracoLoader.preload();
 const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
-let gltfScene; // Houd een verwijzing naar de geladen scene
+let model; // Houd een verwijzing naar de geladen scene
 loader.load("model/Shoe_compressed.glb", (gltf) => {
-  gltfScene = gltf.scene; // Verwijzing opslaan
-  gltfScene.scale.set(12, 12, 12); // Begin met een redelijke schaal
-  scene.add(gltf.scene);
+  model = gltf.scene; // Verwijzing opslaan
+  model.scale.set(12, 12, 12); // Begin met een redelijke schaal
+
+  model.traverse((child) => {
+    if (child.isMesh) {
+      console.log(child.material.name);
+      child.material.envMapIntensity = 20; // Verhoog de intensiteit van de omgevingskaart
+      child.material.needsUpdate = true; // Update de materialen
+    }
+  });
+  scene.add(model);
 });
+
+//functie kleurenverandering
+function changeLaces(color) {
+  console.log(color);
+  if (model) {
+    model.traverse((child) => {
+      if (child.isMesh) {
+        if (child.material.name === "mat_laces") {
+          child.material.color.set(color);
+        }
+      }
+    });
+  }
+}
+
+function changeSoles(color) {
+  console.log(color);
+  if (model) {
+    model.traverse((child) => {
+      if (child.isMesh) {
+        if (
+          child.material.name === "mat_sole_top" ||
+          child.material.name === "mat_sole_bottom"
+        ) {
+          child.material.color.set(color);
+        }
+      }
+    });
+  }
+}
+
+window.changeLaces = changeLaces;
+window.changeSoles = changeSoles;
 
 // RGBE loader
 const rgbeLoader = new RGBELoader();
 rgbeLoader.load("envmap/urban.hdr", (texture) => {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = texture;
+  scene.background = texture;
 });
 
 // Lights
-const light = new THREE.DirectionalLight(0xffffff, 0.5); // Begin intensiteit is 0.5
-light.position.set(0, 0, 5); // Positie van het licht
+const light = new THREE.DirectionalLight(0xffffff, 0.5);
+light.position.set(0, 0, 5);
 scene.add(light);
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Omgevingslicht
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 // Background color
@@ -66,32 +108,31 @@ camera.position.y = 3;
 // dat.GUI setup
 const gui = new dat.GUI();
 const settings = {
-  lightIntensity: 0.5, // Begin intensiteit van het DirectionalLight
-  modelX: 0, // X-positie van het model
-  modelY: 0, // Y-positie van het model
-  modelZ: 0, // Z-positie van het model
-  modelScale: 10, // Schaal van het model
+  lightIntensity: 0.5,
+  modelX: 0,
+  modelY: 0,
+  modelZ: 0,
+  modelScale: 10,
 };
 
-// Voeg schuifregelaars toe voor het licht en modelinstellingen
 gui.add(settings, "lightIntensity", 0, 2).onChange((value) => {
   light.intensity = value; // Verander de intensiteit van het licht
 });
 
 gui.add(settings, "modelX", -10, 10).onChange((value) => {
-  if (gltfScene) gltfScene.position.x = value; // Verander de X-positie van het model
+  if (model) model.position.x = value; // Verander de X-positie van het model
 });
 
 gui.add(settings, "modelY", -10, 10).onChange((value) => {
-  if (gltfScene) gltfScene.position.y = value; // Verander de Y-positie van het model
+  if (model) model.position.y = value; // Verander de Y-positie van het model
 });
 
 gui.add(settings, "modelZ", -10, 10).onChange((value) => {
-  if (gltfScene) gltfScene.position.z = value; // Verander de Z-positie van het model
+  if (model) model.position.z = value; // Verander de Z-positie van het model
 });
 
 gui.add(settings, "modelScale", 1, 15).onChange((value) => {
-  if (gltfScene) gltfScene.scale.set(value, value, value); // Verander de schaal van het model
+  if (model) model.scale.set(value, value, value); // Verander de schaal van het model
 });
 
 //maak responsive
@@ -102,9 +143,9 @@ window.addEventListener("resize", () => {
 });
 
 function animate() {
-  if (gltfScene) {
+  if (model) {
     // Laat de camera altijd kijken naar het model
-    camera.lookAt(gltfScene.position);
+    camera.lookAt(model.position);
   }
 
   controls.update();
