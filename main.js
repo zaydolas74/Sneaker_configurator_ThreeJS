@@ -79,8 +79,22 @@ function changeSoles(color) {
   }
 }
 
+function changeOutside(color) {
+  console.log(color);
+  if (model) {
+    model.traverse((child) => {
+      if (child.isMesh) {
+        if (child.material.name === "mat_outside_1") {
+          child.material.color.set(color);
+        }
+      }
+    });
+  }
+}
+
 window.changeLaces = changeLaces;
 window.changeSoles = changeSoles;
+window.changeOutside = changeOutside;
 
 // RGBE loader
 const rgbeLoader = new RGBELoader();

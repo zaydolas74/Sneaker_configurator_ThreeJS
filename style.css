@@ -49,6 +49,14 @@ body {
   justify-content: space-between;
 }
 
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
 .color-button {
   width: 30px;
   height: 30px;
