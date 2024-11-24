@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { gsap } from "gsap";
 import * as dat from "dat.gui";
 
 const scene = new THREE.Scene();
@@ -16,6 +17,7 @@ const camera = new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+renderer.setPixelRatio(3);
 
 // Orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -34,16 +36,16 @@ dracoLoader.preload();
 const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
-let model; // Houd een verwijzing naar de geladen scene
+let model;
 loader.load("model/Shoe_compressed.glb", (gltf) => {
-  model = gltf.scene; // Verwijzing opslaan
-  model.scale.set(12, 12, 12); // Begin met een redelijke schaal
+  model = gltf.scene;
+  model.scale.set(12, 12, 12);
 
   model.traverse((child) => {
     if (child.isMesh) {
       console.log(child.material.name);
-      child.material.envMapIntensity = 20; // Verhoog de intensiteit van de omgevingskaart
-      child.material.needsUpdate = true; // Update de materialen
+      child.material.envMapIntensity = 20;
+      child.material.needsUpdate = true;
     }
   });
   scene.add(model);
@@ -51,7 +53,6 @@ loader.load("model/Shoe_compressed.glb", (gltf) => {
 
 //functie kleurenverandering
 function changeLaces(color) {
-  console.log(color);
   if (model) {
     model.traverse((child) => {
       if (child.isMesh) {
@@ -64,7 +65,6 @@ function changeLaces(color) {
 }
 
 function changeSoles(color) {
-  console.log(color);
   if (model) {
     model.traverse((child) => {
       if (child.isMesh) {
@@ -80,11 +80,14 @@ function changeSoles(color) {
 }
 
 function changeOutside(color) {
-  console.log(color);
   if (model) {
     model.traverse((child) => {
       if (child.isMesh) {
-        if (child.material.name === "mat_outside_1") {
+        if (
+          child.material.name === "mat_outside_1" ||
+          child.material.name === "mat_outside_2" ||
+          child.material.name === "mat_outside_3"
+        ) {
           child.material.color.set(color);
         }
       }
@@ -96,12 +99,124 @@ window.changeLaces = changeLaces;
 window.changeSoles = changeSoles;
 window.changeOutside = changeOutside;
 
+//raycaster
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+let currentIntersect = null;
+//mouse event
+window.addEventListener("mousemove", (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+});
+
+let isAnimating = false;
+//click event
+window.addEventListener("click", () => {
+  if (isAnimating) return;
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(scene.children, true);
+  const firstIntersect = intersects[0];
+
+  if (firstIntersect) {
+    if (firstIntersect.object.material.name === "mat_laces") {
+      isAnimating = true; // Lock animations
+      gsap.to(firstIntersect.object.material.emissive, {
+        duration: 0.5,
+        r: 0.25,
+        g: 0.77,
+        b: 0.45,
+        repeat: 1,
+        yoyo: true,
+        onComplete: () => {
+          firstIntersect.object.material.emissive.set(0x000000); // Ensure reset
+          isAnimating = false; // Unlock animations
+        },
+      });
+      gsap.to(camera.position, {
+        duration: 1,
+        y: 5,
+        z: 4,
+        x: 0,
+      });
+    }
+    if (
+      firstIntersect.object.material.name === "mat_sole_top" ||
+      firstIntersect.object.material.name === "mat_sole_bottom"
+    ) {
+      model.traverse((child) => {
+        if (child.isMesh) {
+          if (
+            child.material.name === "mat_sole_top" ||
+            child.material.name === "mat_sole_bottom"
+          ) {
+            isAnimating = true; // Lock animations
+            gsap.to(child.material.emissive, {
+              duration: 0.5,
+              r: 0.25,
+              g: 0.77,
+              b: 0.45,
+              repeat: 1,
+              yoyo: true,
+              onComplete: () => {
+                firstIntersect.object.material.emissive.set(0x000000);
+                isAnimating = false;
+              },
+            });
+          }
+        }
+      });
+      gsap.to(camera.position, {
+        duration: 1,
+        y: 0,
+        z: 1,
+        x: 6,
+      });
+    }
+
+    if (
+      firstIntersect.object.material.name === "mat_outside_1" ||
+      firstIntersect.object.material.name === "mat_outside_2" ||
+      firstIntersect.object.material.name === "mat_outside_3"
+    ) {
+      model.traverse((child) => {
+        if (child.isMesh) {
+          if (
+            child.material.name === "mat_outside_1" ||
+            child.material.name === "mat_outside_2" ||
+            child.material.name === "mat_outside_3"
+          ) {
+            isAnimating = true; // Lock animations
+            gsap.to(child.material.emissive, {
+              duration: 0.5,
+              r: 0.25,
+              g: 0.77,
+              b: 0.45,
+              repeat: 1,
+              yoyo: true,
+              onComplete: () => {
+                firstIntersect.object.material.emissive.set(0x000000);
+                isAnimating = false;
+              },
+            });
+          }
+        }
+      });
+      gsap.to(camera.position, {
+        duration: 1,
+        y: 0,
+        z: 1,
+        x: -6,
+      });
+    }
+  }
+});
+
 // RGBE loader
 const rgbeLoader = new RGBELoader();
 rgbeLoader.load("envmap/urban.hdr", (texture) => {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = texture;
-  scene.background = texture;
 });
 
 // Lights
@@ -119,7 +234,7 @@ scene.background = new THREE.Color("#D5DCDE");
 camera.position.z = 5;
 camera.position.y = 3;
 
-// dat.GUI setup
+/* dat.GUI setup
 const gui = new dat.GUI();
 const settings = {
   lightIntensity: 0.5,
@@ -147,7 +262,7 @@ gui.add(settings, "modelZ", -10, 10).onChange((value) => {
 
 gui.add(settings, "modelScale", 1, 15).onChange((value) => {
   if (model) model.scale.set(value, value, value); // Verander de schaal van het model
-});
+});*/
 
 //maak responsive
 window.addEventListener("resize", () => {
@@ -157,11 +272,6 @@ window.addEventListener("resize", () => {
 });
 
 function animate() {
-  if (model) {
-    // Laat de camera altijd kijken naar het model
-    camera.lookAt(model.position);
-  }
-
   controls.update();
 
   renderer.render(scene, camera);
