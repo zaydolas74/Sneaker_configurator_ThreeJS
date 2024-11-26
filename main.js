@@ -5,7 +5,7 @@ import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { gsap } from "gsap";
-import * as dat from "dat.gui";
+//import * as dat from "dat.gui";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -18,6 +18,8 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.setPixelRatio(3);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 // Orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -39,17 +41,28 @@ loader.setDRACOLoader(dracoLoader);
 let model;
 loader.load("model/Shoe_compressed.glb", (gltf) => {
   model = gltf.scene;
-  model.scale.set(12, 12, 12);
+  model.scale.set(14, 14, 14);
 
   model.traverse((child) => {
     if (child.isMesh) {
-      console.log(child.material.name);
+      child.castShadow = true;
       child.material.envMapIntensity = 20;
       child.material.needsUpdate = true;
     }
   });
   scene.add(model);
 });
+
+//plane voor schaduw
+const planeGeometry = new THREE.PlaneGeometry(500, 500);
+const planeMaterial = new THREE.ShadowMaterial({
+  opacity: 0.5,
+});
+const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+plane.rotation.x = -Math.PI / 2;
+plane.position.y = -2;
+plane.receiveShadow = true;
+scene.add(plane);
 
 //functie kleurenverandering
 function changeLaces(color) {
@@ -103,7 +116,6 @@ window.changeOutside = changeOutside;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-let currentIntersect = null;
 //mouse event
 window.addEventListener("mousemove", (event) => {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -120,17 +132,18 @@ window.addEventListener("click", () => {
 
   if (firstIntersect) {
     if (firstIntersect.object.material.name === "mat_laces") {
-      isAnimating = true; // Lock animations
+      goToSlide(0);
+      isAnimating = true;
       gsap.to(firstIntersect.object.material.emissive, {
         duration: 0.5,
-        r: 0.25,
-        g: 0.77,
-        b: 0.45,
+        r: 1,
+        g: 1,
+        b: 1,
         repeat: 1,
         yoyo: true,
         onComplete: () => {
-          firstIntersect.object.material.emissive.set(0x000000); // Ensure reset
-          isAnimating = false; // Unlock animations
+          firstIntersect.object.material.emissive.set(0x000000);
+          isAnimating = false;
         },
       });
       gsap.to(camera.position, {
@@ -150,12 +163,13 @@ window.addEventListener("click", () => {
             child.material.name === "mat_sole_top" ||
             child.material.name === "mat_sole_bottom"
           ) {
-            isAnimating = true; // Lock animations
+            goToSlide(1);
+            isAnimating = true;
             gsap.to(child.material.emissive, {
               duration: 0.5,
-              r: 0.25,
-              g: 0.77,
-              b: 0.45,
+              r: 1,
+              g: 1,
+              b: 1,
               repeat: 1,
               yoyo: true,
               onComplete: () => {
@@ -186,12 +200,13 @@ window.addEventListener("click", () => {
             child.material.name === "mat_outside_2" ||
             child.material.name === "mat_outside_3"
           ) {
-            isAnimating = true; // Lock animations
+            goToSlide(2);
+            isAnimating = true;
             gsap.to(child.material.emissive, {
               duration: 0.5,
-              r: 0.25,
-              g: 0.77,
-              b: 0.45,
+              r: 1,
+              g: 1,
+              b: 1,
               repeat: 1,
               yoyo: true,
               onComplete: () => {
@@ -212,6 +227,12 @@ window.addEventListener("click", () => {
   }
 });
 
+//Go to slide
+function goToSlide(slideIndex) {
+  currentSlide = slideIndex;
+  updateCarousel();
+}
+
 // RGBE loader
 const rgbeLoader = new RGBELoader();
 rgbeLoader.load("envmap/urban.hdr", (texture) => {
@@ -221,7 +242,16 @@ rgbeLoader.load("envmap/urban.hdr", (texture) => {
 
 // Lights
 const light = new THREE.DirectionalLight(0xffffff, 0.5);
-light.position.set(0, 0, 5);
+light.position.set(0, 10, 5);
+light.castShadow = true;
+light.shadow.mapSize.width = 1024;
+light.shadow.mapSize.height = 1024;
+light.shadow.camera.near = 0.5;
+light.shadow.camera.far = 50;
+light.shadow.camera.left = -5;
+light.shadow.camera.right = 5;
+light.shadow.camera.top = 5;
+light.shadow.camera.bottom = -5;
 scene.add(light);
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
