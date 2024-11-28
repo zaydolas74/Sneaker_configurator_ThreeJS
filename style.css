@@ -193,12 +193,15 @@ body {
   border-radius: 50%;
   border: 2px solid #ddd;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
   transition: border 0.3s ease;
   flex-shrink: 0;
   background-color: #fff; /* Aangezien we met iconen werken */
+  font-size: 1.3em;
+  padding: 0;
+  margin: 0;
 }
 
 .material-button:hover {
@@ -207,15 +210,6 @@ body {
 
 .material-button:focus {
   border: 3px solid #3333333d;
-}
-
-.material-icon {
-  font-size: 1.5em;
-}
-
-.material-icon img {
-  width: 30px;
-  height: 30px;
 }
 
 #rubber {
