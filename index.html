@@ -29,41 +29,6 @@
 
       <div class="carousel">
         <div class="carousel-wrapper">
-          <!-- Color picker Laces-->
-          <!-- Section for Laces -->
-          <div class="customization-section">
-            <div class="color-options">
-              <button
-                onclick="changeLaces('White')"
-                class="color-button color-white"
-              ></button>
-              <button
-                onclick="changeLaces('Black')"
-                class="color-button color-black"
-              ></button>
-              <button
-                onclick="changeLaces('#0047ab')"
-                class="color-button color-blue"
-              ></button>
-              <button
-                onclick="changeLaces('#ee4b2b')"
-                class="color-button color-red"
-              ></button>
-              <button
-                onclick="changeLaces('#50c878')"
-                class="color-button color-green"
-              ></button>
-              <button
-                onclick="changeLaces('#808080')"
-                class="color-button color-gray"
-              ></button>
-              <button
-                onclick="changeLaces('#8b4513')"
-                class="color-button color-brown"
-              ></button>
-            </div>
-          </div>
-
           <!-- Section for Soles -->
           <div class="customization-section">
             <div class="color-options">
@@ -94,6 +59,19 @@
               <button
                 onclick="changeSoles('#8b4513')"
                 class="color-button color-brown"
+              ></button>
+            </div>
+            <div class="material-options">
+              <button
+                onclick="changeMaterialSoles('none')"
+                class="material-button"
+              >
+                <span class="material-icon">❌</span>
+              </button>
+              <button
+                onclick="changeMaterialSoles('rubber')"
+                class="material-button"
+                id="rubber"
               ></button>
             </div>
           </div>
@@ -131,79 +109,112 @@
               ></button>
             </div>
           </div>
+
+          <!-- Section for Laces -->
+          <div class="customization-section">
+            <div class="color-options">
+              <button
+                onclick="changeLaces('White')"
+                class="color-button color-white"
+              ></button>
+              <button
+                onclick="changeLaces('Black')"
+                class="color-button color-black"
+              ></button>
+              <button
+                onclick="changeLaces('#0047ab')"
+                class="color-button color-blue"
+              ></button>
+              <button
+                onclick="changeLaces('#ee4b2b')"
+                class="color-button color-red"
+              ></button>
+              <button
+                onclick="changeLaces('#50c878')"
+                class="color-button color-green"
+              ></button>
+              <button
+                onclick="changeLaces('#808080')"
+                class="color-button color-gray"
+              ></button>
+              <button
+                onclick="changeLaces('#8b4513')"
+                class="color-button color-brown"
+              ></button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    <script>
-      let currentSlide = 0;
-
-      function updateCarousel() {
-        const carousel = document.querySelector(".carousel");
-        const carouselWrapper = document.querySelector(".carousel-wrapper");
-        const slideWidth = carousel.clientWidth;
-        const totalSlides = document.querySelectorAll(
-          ".customization-section"
-        ).length;
-
-        const offset = -(currentSlide * slideWidth);
-        carouselWrapper.style.transform = `translateX(${offset}px)`;
-      }
-
-      function prevSlide() {
-        if (currentSlide > 0) {
-          currentSlide--;
-          updateCarousel();
-        }
-      }
-
-      function nextSlide() {
-        const totalSlides = document.querySelectorAll(
-          ".customization-section"
-        ).length;
-        if (currentSlide < totalSlides - 1) {
-          currentSlide++;
-          updateCarousel();
-        }
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        updateCarousel();
-
-        window.addEventListener("resize", () => {
-          updateCarousel();
-        });
-      });
-    </script>
-
-    <script>
-      const sectionTitles = ["Laces", "Soles", "Outside"];
-
-      const dynamicTitle = document.querySelector("#dynamic-title");
-
-      function updateTitle() {
-        if (currentSlide >= 0 && currentSlide < sectionTitles.length) {
-          dynamicTitle.textContent = sectionTitles[currentSlide];
-        } else {
-          dynamicTitle.textContent = "";
-        }
-      }
-
-      function updateCarousel() {
-        const carousel = document.querySelector(".carousel");
-        const carouselWrapper = document.querySelector(".carousel-wrapper");
-
-        const slideWidth = carousel.clientWidth;
-        const offset = -(currentSlide * slideWidth);
-        carouselWrapper.style.transform = `translateX(${offset}px)`;
-
-        updateTitle();
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        updateTitle();
-      });
-    </script>
-    <script type="module" src="/main.js"></script>
   </body>
+  <script>
+    let currentSlide = 0;
+
+    function updateCarousel() {
+      const carousel = document.querySelector(".carousel");
+      const carouselWrapper = document.querySelector(".carousel-wrapper");
+      const slideWidth = carousel.clientWidth;
+      const totalSlides = document.querySelectorAll(
+        ".customization-section"
+      ).length;
+
+      const offset = -(currentSlide * slideWidth);
+      carouselWrapper.style.transform = `translateX(${offset}px)`;
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateCarousel();
+      }
+    }
+
+    function nextSlide() {
+      const totalSlides = document.querySelectorAll(
+        ".customization-section"
+      ).length;
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateCarousel();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateCarousel();
+
+      window.addEventListener("resize", () => {
+        updateCarousel();
+      });
+    });
+  </script>
+
+  <script>
+    const sectionTitles = ["Soles", "Outside", "Laces"];
+
+    const dynamicTitle = document.querySelector("#dynamic-title");
+
+    function updateTitle() {
+      if (currentSlide >= 0 && currentSlide < sectionTitles.length) {
+        dynamicTitle.textContent = sectionTitles[currentSlide];
+      } else {
+        dynamicTitle.textContent = "";
+      }
+    }
+
+    function updateCarousel() {
+      const carousel = document.querySelector(".carousel");
+      const carouselWrapper = document.querySelector(".carousel-wrapper");
+
+      const slideWidth = carousel.clientWidth;
+      const offset = -(currentSlide * slideWidth);
+      carouselWrapper.style.transform = `translateX(${offset}px)`;
+
+      updateTitle();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateTitle();
+    });
+  </script>
+  <script type="module" src="/main.js"></script>
 </html>
