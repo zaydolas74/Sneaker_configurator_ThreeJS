@@ -17,6 +17,8 @@
     </div>
 
     <div id="configurator">
+      <!--<button class="button-Finish" role="button">Proceed</button> -->
+
       <div class="carousel-navigation">
         <button onclick="prevSlide()">
           <i class="fa-solid fa-arrow-left"></i>
@@ -143,6 +145,23 @@
               ></button>
             </div>
           </div>
+
+          <!-- Section for Logo -->
+          <div class="customization-section">
+            <div id="center-logo">
+              <input type="file" id="logoUpload" accept="image/*" />
+              <div id="logoPreviewContainer">
+                <p>Preview:</p>
+                <img
+                  id="logoPreview"
+                  src=""
+                  alt="Logo preview"
+                  style="display: none"
+                />
+              </div>
+              <button onclick="applyLogo()">Apply Logo</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -189,7 +208,7 @@
   </script>
 
   <script>
-    const sectionTitles = ["Soles", "Outside", "Laces"];
+    const sectionTitles = ["Soles", "Outside", "Laces", "Logo"];
 
     const dynamicTitle = document.querySelector("#dynamic-title");
 

@@ -1,7 +1,15 @@
+@font-face {
+  font-family: "HelveticaNeue";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/HelveticaNeue-HeavyCond.woff") format("woff2");
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: "HelveticaNeue";
+  text-transform: uppercase;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -32,7 +40,6 @@ body {
   border-radius: 10px 10px 0 0;
   border: 1px solid rgba(121, 121, 121, 0.455);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.252);
-  font-family: Arial, sans-serif;
   z-index: 10;
   width: 80%;
   -webkit-backdrop-filter: blur(20px);
@@ -51,27 +58,13 @@ body {
   }
 }
 
-#configurator h1 {
-  margin: 0 0 15px;
-  font-size: 18px;
-  color: #333;
-  text-align: center;
-}
-
-.section-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: black;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
 .carousel-navigation .section-title {
   flex: 1;
   text-align: center;
   font-weight: bold;
-  font-size: 16px;
-  color: #000;
+  font-size: 20px;
+  letter-spacing: 0px;
+  color: #000000;
   margin: 0;
 }
 
@@ -215,4 +208,92 @@ body {
 #rubber {
   background-image: url("/rubber-icon.png");
   background-size: cover;
+}
+
+.button-Finish {
+  background-color: #c2fbd7;
+  border-radius: 100px;
+  box-shadow: rgba(44, 187, 99, 0.2) 0 -25px 18px -14px inset,
+    rgba(44, 187, 99, 0.15) 0 1px 2px, rgba(44, 187, 99, 0.15) 0 2px 4px,
+    rgba(44, 187, 99, 0.15) 0 4px 8px, rgba(44, 187, 99, 0.15) 0 8px 16px,
+    rgba(44, 187, 99, 0.15) 0 16px 32px;
+  color: green;
+  cursor: pointer;
+  display: inline-block;
+  font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto, sans-serif;
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-Finish:hover {
+  box-shadow: rgba(44, 187, 99, 0.35) 0 -25px 18px -14px inset,
+    rgba(44, 187, 99, 0.25) 0 1px 2px, rgba(44, 187, 99, 0.25) 0 2px 4px,
+    rgba(44, 187, 99, 0.25) 0 4px 8px, rgba(44, 187, 99, 0.25) 0 8px 16px,
+    rgba(44, 187, 99, 0.25) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+}
+
+#center-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#logoPreviewContainer {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column; /* Zorg ervoor dat de preview boven de knop staat */
+  align-items: center; /* Centreer het logo preview element */
+  justify-content: center; /* Centreer de inhoud verticaal */
+}
+
+#logoPreview {
+  width: 150px; /* Vergroot de preview indien nodig */
+  height: auto;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 20px; /* Voeg wat ruimte toe onder de afbeelding */
+}
+
+#center-logo button {
+  background-color: #363636; /* Groene knopkleur */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#center-logo button:hover {
+  background-color: #2b2b2b; /* Donkerdere groene kleur op hover */
+  scale: 1.02;
+}
+
+#center-logo input[type="file"] {
+  color: transparent;
+  text-align: center;
+  width: 200px;
+}
+
+#center-logo input::file-selector-button {
+  font-weight: 700;
+  color: #fff;
+  padding: 1rem 0rem;
+  border: none;
+  border-radius: 3px;
+  width: 100%;
+  background-color: #50c878;
+  font-size: 1.2rem;
+  cursor: pointer;
 }

@@ -5,6 +5,8 @@ import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { gsap } from "gsap";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 //import * as dat from "dat.gui";
 
 const scene = new THREE.Scene();
@@ -269,6 +271,42 @@ function goToSlide(slideIndex) {
   updateCarousel();
 }
 
+const fileInput = document.getElementById("logoUpload");
+const logoPreview = document.getElementById("logoPreview");
+
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const imageURL = URL.createObjectURL(file);
+    logoPreview.src = imageURL;
+    logoPreview.style.display = "block";
+  }
+});
+
+function applyLogo() {
+  if (!logoPreview.src) {
+    alert("Please upload a logo first!");
+    return;
+  }
+
+  console.log(logoPreview.src);
+
+  const logoTexture = textureLoader.load(logoPreview.src);
+
+  const logoGeometry = new THREE.PlaneGeometry(0.5, 0.5);
+  const logoMaterial = new THREE.MeshBasicMaterial({
+    map: logoTexture,
+    transparent: true,
+  });
+
+  const logo = new THREE.Mesh(logoGeometry, logoMaterial);
+
+  logo.position.set(2, 2, 2);
+  scene.add(logo);
+}
+
+window.applyLogo = applyLogo;
+
 // RGBE loader
 const rgbeLoader = new RGBELoader();
 rgbeLoader.load("envmap/urban.hdr", (texture) => {
@@ -277,7 +315,7 @@ rgbeLoader.load("envmap/urban.hdr", (texture) => {
 });
 
 // Lights
-const light = new THREE.DirectionalLight(0xffffff, 0.5);
+const light = new THREE.DirectionalLight(0xffffff, 0.2);
 light.position.set(0, 10, 5);
 light.castShadow = true;
 light.shadow.mapSize.width = 1024;
