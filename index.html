@@ -15,10 +15,9 @@
     <div id="logo">
       <img src="/Logo.webp" alt="Logo" />
     </div>
+    <button id="button-Finish" role="button">Finish</button>
 
     <div id="configurator">
-      <!--<button class="button-Finish" role="button">Proceed</button> -->
-
       <div class="carousel-navigation">
         <button onclick="prevSlide()">
           <i class="fa-solid fa-arrow-left"></i>
@@ -150,22 +149,35 @@
           <div class="customization-section">
             <div id="center-logo">
               <input type="file" id="logoUpload" accept="image/*" />
-              <div id="logoPreviewContainer">
-                <p>Preview:</p>
-                <img
-                  id="logoPreview"
-                  src=""
-                  alt="Logo preview"
-                  style="display: none"
-                />
+              <div id="logoPreviewContainer" style="display: none">
+                <div id="previewRemove">
+                  <button id="closeImage" onclick="removePreview()">❌</button>
+                  <img
+                    id="logoPreview"
+                    src=""
+                    alt="Logo preview"
+                    style="display: none"
+                  />
+                </div>
+                <button onclick="applyLogo()">Apply Logo</button>
               </div>
-              <button onclick="applyLogo()">Apply Logo</button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </body>
+
+  <script>
+    function removePreview() {
+      document.querySelector("#logoPreview").style.display = "none";
+      document.querySelector("#logoPreview").src = "";
+      document.querySelector("#logoPreviewContainer").style.display = "none";
+      document.querySelector("#logoUpload").value = "";
+      document.querySelector("#logoUpload").style.display = "block";
+    }
+  </script>
+
   <script>
     let currentSlide = 0;
 
@@ -186,6 +198,16 @@
         currentSlide--;
         updateCarousel();
       }
+      if (currentSlide != 0) {
+        document.querySelector(".material-options").style.display = "none";
+      } else {
+        document.querySelector(".material-options").style.display = "flex";
+      }
+      if (currentSlide != 3) {
+        document.querySelector("#previewRemove").style.display = "none";
+      } else {
+        document.querySelector("#previewRemove").style.display = "flex";
+      }
     }
 
     function nextSlide() {
@@ -195,6 +217,14 @@
       if (currentSlide < totalSlides - 1) {
         currentSlide++;
         updateCarousel();
+      }
+      if (currentSlide != 0) {
+        document.querySelector(".material-options").style.display = "none";
+      }
+      if (currentSlide != 3) {
+        document.querySelector("#previewRemove").style.display = "none";
+      } else {
+        document.querySelector("#previewRemove").style.display = "flex";
       }
     }
 

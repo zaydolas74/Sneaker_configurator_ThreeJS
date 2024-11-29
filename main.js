@@ -5,8 +5,7 @@ import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { gsap } from "gsap";
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+
 //import * as dat from "dat.gui";
 
 const scene = new THREE.Scene();
@@ -51,9 +50,23 @@ const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
 let model;
+
+function updateModelScale() {
+  const screenWidth = window.innerWidth;
+
+  // Pas de schaal aan op basis van de schermbreedte
+  let scaleFactor = (screenWidth / 1000) * 12; // Kies een geschikte verhouding
+  if (scaleFactor < 10) scaleFactor = 10; // Minimale schaal
+  if (scaleFactor > 12) scaleFactor = 12; // Maximale schaal
+
+  if (model) {
+    model.scale.set(scaleFactor, scaleFactor, scaleFactor);
+  }
+}
+
 loader.load("model/Shoe_compressed.glb", (gltf) => {
   model = gltf.scene;
-  model.scale.set(14, 14, 14);
+  updateModelScale();
 
   model.traverse((child) => {
     if (child.isMesh) {
@@ -62,7 +75,10 @@ loader.load("model/Shoe_compressed.glb", (gltf) => {
       child.material.needsUpdate = true;
     }
   });
+
   scene.add(model);
+
+  window.addEventListener("resize", updateModelScale);
 });
 
 //plane voor schaduw
@@ -265,6 +281,43 @@ window.addEventListener("click", () => {
   }
 });
 
+//mouse hover
+let lastIntersected = null; // Houd het laatst gehighlighte object bij
+
+window.addEventListener("mousemove", () => {
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(scene.children, true);
+  const firstIntersect = intersects[0];
+
+  if (firstIntersect) {
+    if (
+      firstIntersect.object.material.name === "mat_laces" ||
+      firstIntersect.object.material.name === "mat_sole_top" ||
+      firstIntersect.object.material.name === "mat_sole_bottom" ||
+      firstIntersect.object.material.name === "mat_outside_1" ||
+      firstIntersect.object.material.name === "mat_outside_2" ||
+      firstIntersect.object.material.name === "mat_outside_3"
+    ) {
+      // Reset emissive kleur van het vorige object
+      if (lastIntersected && lastIntersected !== firstIntersect.object) {
+        lastIntersected.material.emissive.set(0x000000);
+      }
+
+      // Highlight het huidige object
+      firstIntersect.object.material.emissive.set("white");
+
+      // Update het laatst gehighlighte object
+      lastIntersected = firstIntersect.object;
+    }
+  } else {
+    // Reset emissive kleur als er geen intersecties meer zijn
+    if (lastIntersected) {
+      lastIntersected.material.emissive.set(0x000000);
+      lastIntersected = null; // Reset lastIntersected om toekomstige updates mogelijk te maken
+    }
+  }
+});
+
 //Go to slide
 function goToSlide(slideIndex) {
   currentSlide = slideIndex;
@@ -273,6 +326,7 @@ function goToSlide(slideIndex) {
 
 const fileInput = document.getElementById("logoUpload");
 const logoPreview = document.getElementById("logoPreview");
+const LogoPreviewDiv = document.getElementById("logoPreviewContainer");
 
 fileInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
@@ -280,6 +334,8 @@ fileInput.addEventListener("change", (event) => {
     const imageURL = URL.createObjectURL(file);
     logoPreview.src = imageURL;
     logoPreview.style.display = "block";
+    LogoPreviewDiv.style.display = "flex";
+    fileInput.style.display = "none";
   }
 });
 
@@ -288,8 +344,6 @@ function applyLogo() {
     alert("Please upload a logo first!");
     return;
   }
-
-  console.log(logoPreview.src);
 
   const logoTexture = textureLoader.load(logoPreview.src);
 
@@ -301,17 +355,24 @@ function applyLogo() {
 
   const logo = new THREE.Mesh(logoGeometry, logoMaterial);
 
-  logo.position.set(2, 2, 2);
+  logo.position.set(0, 0.2, -0.5);
+  logo.rotation.x = -Math.PI / 2; // 90 graden naar beneden
+
   scene.add(logo);
 }
 
 window.applyLogo = applyLogo;
+
+//Carousel camera follow
+//window.prevSlide = prevslide;
+//window.nextSlide = nextSlide;
 
 // RGBE loader
 const rgbeLoader = new RGBELoader();
 rgbeLoader.load("envmap/urban.hdr", (texture) => {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = texture;
+  //scene.background = texture;
 });
 
 // Lights

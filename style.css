@@ -44,7 +44,7 @@ body {
   width: 80%;
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.101);
+  background-color: rgba(255, 255, 255, 0.363);
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -177,7 +177,7 @@ body {
   justify-content: space-evenly;
   flex-wrap: wrap;
   margin: auto;
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 .material-button {
@@ -210,9 +210,9 @@ body {
   background-size: cover;
 }
 
-.button-Finish {
+#button-Finish {
   background-color: #c2fbd7;
-  border-radius: 100px;
+  border-radius: 4px;
   box-shadow: rgba(44, 187, 99, 0.2) 0 -25px 18px -14px inset,
     rgba(44, 187, 99, 0.15) 0 1px 2px, rgba(44, 187, 99, 0.15) 0 2px 4px,
     rgba(44, 187, 99, 0.15) 0 4px 8px, rgba(44, 187, 99, 0.15) 0 8px 16px,
@@ -221,18 +221,22 @@ body {
   cursor: pointer;
   display: inline-block;
   font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto, sans-serif;
-  padding: 7px 20px;
+  padding: 7px 25px;
   text-align: center;
   text-decoration: none;
   transition: all 250ms;
   border: 0;
   font-size: 16px;
+  font-weight: 700;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  position: absolute;
+  top: 20px;
+  right: 40px;
 }
 
-.button-Finish:hover {
+#button-Finish:hover {
   box-shadow: rgba(44, 187, 99, 0.35) 0 -25px 18px -14px inset,
     rgba(44, 187, 99, 0.25) 0 1px 2px, rgba(44, 187, 99, 0.25) 0 2px 4px,
     rgba(44, 187, 99, 0.25) 0 4px 8px, rgba(44, 187, 99, 0.25) 0 8px 16px,
@@ -242,25 +246,25 @@ body {
 
 #center-logo {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 #logoPreviewContainer {
   margin-top: 10px;
   display: flex;
-  flex-direction: column; /* Zorg ervoor dat de preview boven de knop staat */
-  align-items: center; /* Centreer het logo preview element */
-  justify-content: center; /* Centreer de inhoud verticaal */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #logoPreview {
-  width: 150px; /* Vergroot de preview indien nodig */
+  width: 100px; /* Vergroot de preview indien nodig */
   height: auto;
   border: 1px solid #ccc;
   padding: 5px;
-  border-radius: 5px;
+  border-radius: 4px;
   margin-bottom: 20px; /* Voeg wat ruimte toe onder de afbeelding */
 }
 
@@ -273,6 +277,7 @@ body {
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  border-radius: 4px;
 }
 
 #center-logo button:hover {
@@ -283,17 +288,49 @@ body {
 #center-logo input[type="file"] {
   color: transparent;
   text-align: center;
-  width: 200px;
+  width: 170px;
 }
 
 #center-logo input::file-selector-button {
   font-weight: 700;
   color: #fff;
-  padding: 1rem 0rem;
+  padding: 0.5rem 0rem;
   border: none;
-  border-radius: 3px;
+  border-radius: 4px;
   width: 100%;
   background-color: #50c878;
   font-size: 1.2rem;
   cursor: pointer;
+}
+
+#previewRemove {
+  position: relative; /* Allows #closeImage to position itself inside this container */
+  display: inline-block; /* Ensure the size wraps around its content */
+}
+
+#logoPreview {
+  width: 100px; /* Adjust preview size if necessary */
+  height: auto;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+#center-logo #closeImage {
+  position: absolute; /* Position relative to #previewRemove */
+  top: -8px; /* Adjust spacing from the top */
+  right: -8px; /* Adjust spacing from the right */
+  border-radius: 50%;
+  background: white; /* Remove default button background */
+  border: none; /* Remove default button border */
+  font-size: 10px; /* Adjust icon size */
+  padding: 3px;
+  cursor: pointer; /* Add pointer cursor */
+  color: #333; /* Icon color */
+  z-index: 10; /* Ensure it appears above the image */
+}
+
+#center-logo #closeImage:hover {
+  color: red; /* Change icon color on hover for better UX */
+  scale: 1;
 }
