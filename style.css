@@ -445,3 +445,22 @@ body {
 #prevArrow {
   opacity: 0.3;
 }
+
+#confirmation {
+  display: none;
+}
+
+#confirmation p {
+  font-family: Arial, sans-serif;
+  text-transform: none;
+}
+
+#closeConfirmation {
+  background-color: #f45044;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -552,8 +552,17 @@ document.getElementById("closeButton").addEventListener("click", function () {
   popupActive = false;
 });
 
+document
+  .getElementById("closeConfirmation")
+  .addEventListener("click", function () {
+    document.getElementById("popUp").style.display = "none";
+    popupActive = false;
+  });
+
 document.getElementById("button-Finish").addEventListener("click", function () {
   document.getElementById("popUp").style.display = "flex";
+  document.getElementById("shoeForm").style.display = "flex";
+  document.getElementById("confirmation").style.display = "none";
   popupActive = true;
 });
 
@@ -577,6 +586,7 @@ document.getElementById("shoeForm").addEventListener("submit", function (e) {
   let logoURL = null;
 
   if (logo) {
+    console.log("Uploading logo to Cloudinary...");
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
@@ -604,7 +614,7 @@ document.getElementById("shoeForm").addEventListener("submit", function (e) {
           outsideColor,
           logo: cloudinaryUrl,
           status: "Processing", // Default status
-          date: new Date().toISOString(), // Current date in ISO format
+          date: new Date().toISOString().split("T")[0],
         };
 
         // Send the data to the API
@@ -625,7 +635,39 @@ document.getElementById("shoeForm").addEventListener("submit", function (e) {
         console.error("Error uploading logo to Cloudinary:", error);
       }
     };
+  } else {
+    const placeholderLogoUrl =
+      "https://via.placeholder.com/512x512.png?text=No+Logo+Selected";
+    console.log("No logo uploaded");
+    const payload = {
+      size,
+      amount,
+      email,
+      lacesColor,
+      soleColor: solesColor,
+      solesMaterial,
+      outsideColor,
+      logo: placeholderLogoUrl,
+      status: "Processing", // Default status
+      date: new Date().toISOString().split("T")[0],
+    };
+
+    // Send the data to the API
+    fetch("https://sneaker-configurator-api.onrender.com/api/v1/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.error("Error:", error));
   }
+
+  //display none form
+  document.getElementById("shoeForm").style.display = "none";
+  document.getElementById("confirmation").style.display = "block";
 });
 
 // Function to upload image to Cloudinary
