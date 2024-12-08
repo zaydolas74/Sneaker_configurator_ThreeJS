@@ -186,7 +186,7 @@ window.addEventListener("click", () => {
 
   if (firstIntersect) {
     if (firstIntersect.object.material.name === "mat_laces") {
-      goToSlide(0);
+      goToSlide(2);
       isAnimating = true;
       gsap.to(firstIntersect.object.material.emissive, {
         duration: 0.5,
@@ -217,7 +217,7 @@ window.addEventListener("click", () => {
             child.material.name === "mat_sole_top" ||
             child.material.name === "mat_sole_bottom"
           ) {
-            goToSlide(1);
+            goToSlide(0);
             isAnimating = true;
             gsap.to(child.material.emissive, {
               duration: 0.5,
@@ -254,7 +254,7 @@ window.addEventListener("click", () => {
             child.material.name === "mat_outside_2" ||
             child.material.name === "mat_outside_3"
           ) {
-            goToSlide(2);
+            goToSlide(1);
             isAnimating = true;
             gsap.to(child.material.emissive, {
               duration: 0.5,

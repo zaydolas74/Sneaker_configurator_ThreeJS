@@ -72,6 +72,9 @@ body {
   position: relative;
   width: 100%;
   overflow: hidden;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
 }
 
 .carousel-wrapper {
@@ -232,8 +235,14 @@ body {
   -webkit-user-select: none;
   touch-action: manipulation;
   position: absolute;
-  top: 20px;
-  right: 40px;
+  bottom: 268px;
+  right: 101px;
+}
+
+@media screen and (max-width: 900px) {
+  #button-Finish {
+    right: 20px;
+  }
 }
 
 #button-Finish:hover {
@@ -317,20 +326,118 @@ body {
 }
 
 #center-logo #closeImage {
-  position: absolute; /* Position relative to #previewRemove */
-  top: -8px; /* Adjust spacing from the top */
-  right: -8px; /* Adjust spacing from the right */
+  position: absolute;
+  top: -8px;
+  right: -8px;
   border-radius: 50%;
-  background: white; /* Remove default button background */
-  border: none; /* Remove default button border */
-  font-size: 10px; /* Adjust icon size */
+  background: white;
+  border: none;
+  font-size: 10px;
   padding: 3px;
-  cursor: pointer; /* Add pointer cursor */
-  color: #333; /* Icon color */
-  z-index: 10; /* Ensure it appears above the image */
+  cursor: pointer;
+  color: #333;
+  z-index: 10;
 }
 
 #center-logo #closeImage:hover {
-  color: red; /* Change icon color on hover for better UX */
+  color: red;
   scale: 1;
+}
+
+#popUp {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+#popUpContent {
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.482);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
+}
+
+#shoeForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#shoeForm h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+#shoeForm label {
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+}
+
+#shoeForm select,
+#shoeForm input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+#shoeForm input:focus,
+#shoeForm select:focus {
+  outline: none;
+  border-color: #5cb65f;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+#buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#shoeForm button {
+  flex: 1;
+
+  background-color: #5fbf63;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#shoeForm button[type="submit"] {
+  background-color: #5fbf63;
+  color: white;
+}
+
+#shoeForm button[type="submit"]:hover {
+  background-color: #58b75c;
+}
+
+#shoeForm #closeButton {
+  background-color: #f45044;
+  color: white;
+}
+
+#shoeForm #closeButton:hover {
+  background-color: #f03d3d;
 }

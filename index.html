@@ -166,7 +166,70 @@
         </div>
       </div>
     </div>
+
+    <div id="popUp">
+      <div id="popUpContent">
+        <form id="shoeForm">
+          <h2>Select Your Shoes</h2>
+
+          <!-- Shoe Size Dropdown -->
+          <label for="shoeSize">Shoe Size:</label>
+          <select id="shoeSize" name="shoeSize" required>
+            <option value="" disabled selected>Select your size</option>
+            <option value="36">36</option>
+            <option value="37">37</option>
+            <option value="38">38</option>
+            <option value="39">39</option>
+            <option value="40">40</option>
+            <option value="41">41</option>
+            <option value="42">42</option>
+            <option value="43">43</option>
+            <option value="44">44</option>
+          </select>
+
+          <!-- Amount -->
+          <label for="amount">Amount:</label>
+          <input
+            type="number"
+            id="amount"
+            name="amount"
+            min="1"
+            placeholder="Enter quantity"
+            required
+          />
+
+          <!-- Email Address -->
+          <label for="email">Email Address:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+
+          <div id="buttonGroup">
+            <button type="submit">Submit</button>
+            <button type="button" id="closeButton">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </body>
+
+  <script>
+    document
+      .getElementById("closeButton")
+      .addEventListener("click", function () {
+        document.getElementById("popUp").style.display = "none";
+      });
+
+    document
+      .getElementById("button-Finish")
+      .addEventListener("click", function () {
+        document.getElementById("popUp").style.display = "flex";
+      });
+  </script>
 
   <script>
     function removePreview() {
