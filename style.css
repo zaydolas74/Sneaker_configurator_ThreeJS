@@ -441,3 +441,7 @@ body {
 #shoeForm #closeButton:hover {
   background-color: #f03d3d;
 }
+
+#prevArrow {
+  opacity: 0.3;
+}

@@ -136,6 +136,7 @@ function changeOutside(color) {
   }
 }
 
+let solesMaterial = "none";
 function changeMaterialSoles(material) {
   if (!model) return; // Stop als het model niet beschikbaar is
 
@@ -147,6 +148,7 @@ function changeMaterialSoles(material) {
         child.material.aoMap = null;
         child.material.displacementMap = null;
       } else if (materials[material]) {
+        solesMaterial = material;
         // Pas de geselecteerde material maps toe
         child.material.normalMap = materials[material].normal;
         child.material.aoMap = materials[material].ambientOcclusion;
@@ -161,10 +163,114 @@ function changeMaterialSoles(material) {
   });
 }
 
+function prevSlide() {
+  nextArrow.style.opacity = "1";
+  if (currentSlide > 0) {
+    currentSlide--;
+    updateCarousel();
+  }
+  if (currentSlide != 0) {
+    document.querySelector(".material-options").style.display = "none";
+  } else {
+    document.querySelector(".material-options").style.display = "flex";
+  }
+
+  if (currentSlide === 0) {
+    prevArrow.style.opacity = "0.3";
+    const timeline = gsap.timeline();
+
+    timeline.to(camera.position, {
+      duration: 0.5,
+      y: 2,
+      z: 4,
+      x: 0,
+    });
+
+    timeline.to(
+      camera.position,
+      {
+        duration: 0.5,
+        y: 0,
+        z: 1,
+        x: 6,
+      },
+      "-=0.1"
+    );
+  }
+  if (currentSlide === 1) {
+    gsap.to(camera.position, {
+      duration: 1,
+      y: 0,
+      z: 1,
+      x: -6,
+    });
+  }
+  if (currentSlide === 2) {
+    gsap.to(camera.position, {
+      duration: 1,
+      y: 5,
+      z: 4,
+      x: 0,
+    });
+  }
+}
+
+function nextSlide() {
+  prevArrow.style.opacity = "1";
+  const totalSlides = document.querySelectorAll(
+    ".customization-section"
+  ).length;
+  if (currentSlide < totalSlides - 1) {
+    currentSlide++;
+    updateCarousel();
+  }
+  if (currentSlide != 0) {
+    document.querySelector(".material-options").style.display = "none";
+  }
+
+  if (currentSlide === 1) {
+    const timeline = gsap.timeline();
+
+    timeline.to(camera.position, {
+      duration: 0.5,
+      y: 2,
+      z: 4,
+      x: 0,
+    });
+
+    timeline.to(camera.position, {
+      duration: 1,
+      y: 0,
+      z: 1,
+      x: -6,
+    });
+  }
+  if (currentSlide === 2) {
+    gsap.to(camera.position, {
+      duration: 1,
+      y: 5,
+      z: 4,
+      x: 0,
+    });
+  }
+  if (currentSlide === 3) {
+    nextArrow.style.opacity = "0.3";
+    gsap.to(camera.position, {
+      duration: 1,
+      y: 5,
+      z: 0,
+      x: 0,
+    });
+  }
+}
+
 window.changeLaces = changeLaces;
 window.changeSoles = changeSoles;
 window.changeOutside = changeOutside;
 window.changeMaterialSoles = changeMaterialSoles;
+
+window.prevSlide = prevSlide;
+window.nextSlide = nextSlide;
 
 //raycaster
 const raycaster = new THREE.Raycaster();
@@ -177,15 +283,19 @@ window.addEventListener("mousemove", (event) => {
 });
 
 let isAnimating = false;
+let popupActive = false;
+
 //click event
 window.addEventListener("click", () => {
-  if (isAnimating) return;
+  if (isAnimating || popupActive) return;
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(scene.children, true);
   const firstIntersect = intersects[0];
 
   if (firstIntersect) {
     if (firstIntersect.object.material.name === "mat_laces") {
+      prevArrow.style.opacity = "1";
+      nextArrow.style.opacity = "1";
       goToSlide(2);
       isAnimating = true;
       gsap.to(firstIntersect.object.material.emissive, {
@@ -218,6 +328,10 @@ window.addEventListener("click", () => {
             child.material.name === "mat_sole_bottom"
           ) {
             goToSlide(0);
+            getShoeInformation("mat_sole_bottom");
+            document.querySelector(".material-options").style.display = "flex";
+            prevArrow.style.opacity = "0.3";
+            nextArrow.style.opacity = "1";
             isAnimating = true;
             gsap.to(child.material.emissive, {
               duration: 0.5,
@@ -234,7 +348,15 @@ window.addEventListener("click", () => {
           }
         }
       });
-      gsap.to(camera.position, {
+      const timeline = gsap.timeline();
+
+      timeline.to(camera.position, {
+        duration: 0.5,
+        y: 2,
+        z: 4,
+        x: 0,
+      });
+      timeline.to(camera.position, {
         duration: 1,
         y: 0,
         z: 1,
@@ -254,6 +376,9 @@ window.addEventListener("click", () => {
             child.material.name === "mat_outside_2" ||
             child.material.name === "mat_outside_3"
           ) {
+            getShoeInformation("mat_outside_3");
+            prevArrow.style.opacity = "1";
+            nextArrow.style.opacity = "1";
             goToSlide(1);
             isAnimating = true;
             gsap.to(child.material.emissive, {
@@ -271,7 +396,15 @@ window.addEventListener("click", () => {
           }
         }
       });
-      gsap.to(camera.position, {
+      const timeline = gsap.timeline();
+
+      timeline.to(camera.position, {
+        duration: 0.5,
+        y: 2,
+        z: 4,
+        x: 0,
+      });
+      timeline.to(camera.position, {
         duration: 1,
         y: 0,
         z: 1,
@@ -283,7 +416,7 @@ window.addEventListener("click", () => {
 
 //mouse hover
 let lastIntersected = null; // Houd het laatst gehighlighte object bij
-
+/*
 window.addEventListener("mousemove", () => {
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(scene.children, true);
@@ -316,7 +449,7 @@ window.addEventListener("mousemove", () => {
       lastIntersected = null; // Reset lastIntersected om toekomstige updates mogelijk te maken
     }
   }
-});
+});*/
 
 //Go to slide
 function goToSlide(slideIndex) {
@@ -325,27 +458,14 @@ function goToSlide(slideIndex) {
 }
 
 const fileInput = document.getElementById("logoUpload");
-const logoPreview = document.getElementById("logoPreview");
-const LogoPreviewDiv = document.getElementById("logoPreviewContainer");
+let imageURL = null;
 
 fileInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
-  if (file) {
-    const imageURL = URL.createObjectURL(file);
-    logoPreview.src = imageURL;
-    logoPreview.style.display = "block";
-    LogoPreviewDiv.style.display = "flex";
-    fileInput.style.display = "none";
-  }
-});
+  if (!file) return;
+  imageURL = URL.createObjectURL(file);
 
-function applyLogo() {
-  if (!logoPreview.src) {
-    alert("Please upload a logo first!");
-    return;
-  }
-
-  const logoTexture = textureLoader.load(logoPreview.src);
+  const logoTexture = textureLoader.load(imageURL);
 
   const logoGeometry = new THREE.PlaneGeometry(0.5, 0.5);
   const logoMaterial = new THREE.MeshBasicMaterial({
@@ -359,9 +479,7 @@ function applyLogo() {
   logo.rotation.x = -Math.PI / 2; // 90 graden naar beneden
 
   scene.add(logo);
-}
-
-window.applyLogo = applyLogo;
+});
 
 //Carousel camera follow
 //window.prevSlide = prevslide;
@@ -428,6 +546,133 @@ gui.add(settings, "modelZ", -10, 10).onChange((value) => {
 gui.add(settings, "modelScale", 1, 15).onChange((value) => {
   if (model) model.scale.set(value, value, value); // Verander de schaal van het model
 });*/
+
+document.getElementById("closeButton").addEventListener("click", function () {
+  document.getElementById("popUp").style.display = "none";
+  popupActive = false;
+});
+
+document.getElementById("button-Finish").addEventListener("click", function () {
+  document.getElementById("popUp").style.display = "flex";
+  popupActive = true;
+});
+
+//Send to API
+document.getElementById("shoeForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const size = document.getElementById("shoeSize").value;
+  const amount = document.getElementById("amount").value;
+  const email = document.getElementById("email").value;
+
+  const lacesColor = getShoeInformation("mat_laces").color;
+  const solesColor = getShoeInformation("mat_sole_bottom").color;
+  const solesMaterial = getShoeInformation("mat_sole_bottom").texture;
+  const outsideColor = getShoeInformation("mat_outside_3").color;
+
+  const logo = imageURL ? imageURL : null;
+
+  console.log(logo);
+
+  let logoURL = null;
+
+  if (logo) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = 512;
+    canvas.height = 512;
+
+    const img = new Image();
+    img.src = logo;
+
+    img.onload = async () => {
+      ctx.drawImage(img, 0, 0, 512, 512);
+      logoURL = canvas.toDataURL("image/png");
+
+      try {
+        const cloudinaryResponse = await uploadToCloudinary(logoURL);
+        const cloudinaryUrl = cloudinaryResponse.secure_url;
+
+        const payload = {
+          size,
+          amount,
+          email,
+          lacesColor,
+          soleColor: solesColor,
+          solesMaterial,
+          outsideColor,
+          logo: cloudinaryUrl,
+          status: "Processing", // Default status
+          date: new Date().toISOString(), // Current date in ISO format
+        };
+
+        // Send the data to the API
+        const response = await fetch(
+          "https://sneaker-configurator-api.onrender.com/api/v1/orders",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        const result = await response.json();
+        console.log(result);
+      } catch (error) {
+        console.error("Error uploading logo to Cloudinary:", error);
+      }
+    };
+  }
+});
+
+// Function to upload image to Cloudinary
+async function uploadToCloudinary(base64Image) {
+  const cloudName = "dpglweuvj"; // Replace with your Cloudinary cloud name
+  const uploadPreset = "shoeslogo"; // Replace with your upload preset (set up on Cloudinary)
+
+  const formData = new FormData();
+  formData.append("file", base64Image);
+  formData.append("upload_preset", uploadPreset);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to upload to Cloudinary");
+  }
+
+  return response.json();
+}
+
+//get shoe Information
+function getShoeInformation(materialName) {
+  if (!model) return;
+
+  const materials = Array.isArray(materialName) ? materialName : [materialName];
+
+  let shoeInformation = { color: null, texture: null };
+
+  model.traverse((child) => {
+    if (child.isMesh) {
+      if (materials.includes(child.material.name)) {
+        shoeInformation.color = child.material.color.getStyle();
+        if (child.material.name === "mat_sole_bottom") {
+          shoeInformation.texture = solesMaterial;
+        }
+      }
+    }
+  });
+
+  return shoeInformation;
+}
 
 //maak responsive
 window.addEventListener("resize", () => {

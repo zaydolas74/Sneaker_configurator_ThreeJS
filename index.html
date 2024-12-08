@@ -4,10 +4,6 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script
-      src="https://kit.fontawesome.com/8ead13f8af.js"
-      crossorigin="anonymous"
-    ></script>
 
     <title>3D Configurator</title>
   </head>
@@ -19,11 +15,11 @@
 
     <div id="configurator">
       <div class="carousel-navigation">
-        <button onclick="prevSlide()">
+        <button onclick="prevSlide()" id="prevArrow">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
         <div id="dynamic-title" class="section-title"></div>
-        <button onclick="nextSlide()">
+        <button onclick="nextSlide()" id="nextArrow">
           <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
@@ -149,18 +145,6 @@
           <div class="customization-section">
             <div id="center-logo">
               <input type="file" id="logoUpload" accept="image/*" />
-              <div id="logoPreviewContainer" style="display: none">
-                <div id="previewRemove">
-                  <button id="closeImage" onclick="removePreview()">❌</button>
-                  <img
-                    id="logoPreview"
-                    src=""
-                    alt="Logo preview"
-                    style="display: none"
-                  />
-                </div>
-                <button onclick="applyLogo()">Apply Logo</button>
-              </div>
             </div>
           </div>
         </div>
@@ -176,8 +160,6 @@
           <label for="shoeSize">Shoe Size:</label>
           <select id="shoeSize" name="shoeSize" required>
             <option value="" disabled selected>Select your size</option>
-            <option value="36">36</option>
-            <option value="37">37</option>
             <option value="38">38</option>
             <option value="39">39</option>
             <option value="40">40</option>
@@ -185,6 +167,12 @@
             <option value="42">42</option>
             <option value="43">43</option>
             <option value="44">44</option>
+            <option value="45">45</option>
+            <option value="46">46</option>
+            <option value="47">47</option>
+            <option value="48">48</option>
+            <option value="49">49</option>
+            <option value="50">50</option>
           </select>
 
           <!-- Amount -->
@@ -196,6 +184,7 @@
             min="1"
             placeholder="Enter quantity"
             required
+            value="1"
           />
 
           <!-- Email Address -->
@@ -217,29 +206,9 @@
     </div>
   </body>
 
-  <script>
-    document
-      .getElementById("closeButton")
-      .addEventListener("click", function () {
-        document.getElementById("popUp").style.display = "none";
-      });
+  <script></script>
 
-    document
-      .getElementById("button-Finish")
-      .addEventListener("click", function () {
-        document.getElementById("popUp").style.display = "flex";
-      });
-  </script>
-
-  <script>
-    function removePreview() {
-      document.querySelector("#logoPreview").style.display = "none";
-      document.querySelector("#logoPreview").src = "";
-      document.querySelector("#logoPreviewContainer").style.display = "none";
-      document.querySelector("#logoUpload").value = "";
-      document.querySelector("#logoUpload").style.display = "block";
-    }
-  </script>
+  <script></script>
 
   <script>
     let currentSlide = 0;
@@ -254,41 +223,6 @@
 
       const offset = -(currentSlide * slideWidth);
       carouselWrapper.style.transform = `translateX(${offset}px)`;
-    }
-
-    function prevSlide() {
-      if (currentSlide > 0) {
-        currentSlide--;
-        updateCarousel();
-      }
-      if (currentSlide != 0) {
-        document.querySelector(".material-options").style.display = "none";
-      } else {
-        document.querySelector(".material-options").style.display = "flex";
-      }
-      if (currentSlide != 3) {
-        document.querySelector("#previewRemove").style.display = "none";
-      } else {
-        document.querySelector("#previewRemove").style.display = "flex";
-      }
-    }
-
-    function nextSlide() {
-      const totalSlides = document.querySelectorAll(
-        ".customization-section"
-      ).length;
-      if (currentSlide < totalSlides - 1) {
-        currentSlide++;
-        updateCarousel();
-      }
-      if (currentSlide != 0) {
-        document.querySelector(".material-options").style.display = "none";
-      }
-      if (currentSlide != 3) {
-        document.querySelector("#previewRemove").style.display = "none";
-      } else {
-        document.querySelector("#previewRemove").style.display = "flex";
-      }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
